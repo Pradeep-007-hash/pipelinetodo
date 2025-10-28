@@ -1,0 +1,49 @@
+pipeline{
+    agent any
+        stages{
+            stage('Checkout')
+            {
+                steps{
+                    git branch:'main',url:"https://github.com/PremaLalitha/form_vaild.git"
+                }
+            }
+            stage('Install Dependencies')
+            {
+                steps{
+                    dir('form_vaild')
+                    {
+                        bat 'npm install'
+                    }
+                }
+            }
+            stage('Build')
+            {
+                steps{
+                    dir('form_vaild')
+                    {
+                        bat 'npm run build'
+                    }
+                }
+            }
+            stage('Deploy')
+            {
+                steps{
+                    dir('form_vaild/dist')
+                    {
+                        bat 'npx serve -s . -l 8081'
+                    }
+                }
+            }
+        }
+        post
+        {
+            success
+            {
+                echo "Success"
+            }
+            failure
+            {
+                echo "Failure"
+            }
+        }
+} 
